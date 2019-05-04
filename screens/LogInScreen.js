@@ -1,16 +1,16 @@
 import React from 'react';
 import {
+    AsyncStorage,
     StyleSheet,
     Text,
     View,
     TextInput,
-    TouchableHighlight,
-    AsyncStorage
+    TouchableHighlight
 } from 'react-native';
 
 import Parse from "parse/react-native";
 
-export default class SignUpScreen extends React.Component {
+export default class LogInScreen extends React.Component {
     static navigationOptions = {
         header: null,
     };
@@ -18,36 +18,27 @@ export default class SignUpScreen extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            email: '',
+            username: '',
             password: '',
             nameError: null
         }
     }
-
-    goToLogInPage = async() =>{
-        this.props.navigation.navigate('LogInStack');
+    goToSignUpPage = async() =>{
+        this.props.navigation.navigate('SignUpStack');
     }
 
     onLogin = async() =>{
         let    
             username = this.state.username,
-            email = this.state.email,
             password = this.state.password;
 
-        if (username.trim() === "" || email.trim() === "" || password.trim() === "" ) {
+        if (username.trim() === "" || password.trim() === "" ) {
             this.setState(() => ({ nameError: `Fill the fields correctly.` }));
         } else {
             try {
-              let user = new Parse.User();
-              user.set("username", username);
-              user.set("email", email);
-              user.set("password", password);
-              const result = await user.signUp();
-              
-              AsyncStorage.setItem('sessionToken', result.getSessionToken());
-              AsyncStorage.setItem('username', result.getUsername())
+                await Parse.User.logIn(username, password );
 
-              this.props.navigation.navigate('HomeStack');
+                this.props.navigation.navigate('HomeStack');
             } catch (error) {
                 this.setState(() => ({ nameError: error.message }));
             }
@@ -57,20 +48,13 @@ export default class SignUpScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.titlePage}>Sign Up</Text>
-
-                <View style={styles.inputContainer}>
-                    <TextInput style={styles.inputs}
-                        keyboardType="default"
-                        placeholder="Username"
-                        onChangeText={(username) => this.setState({username})}/>
-                </View>
+                <Text style={styles.titlePage}>Log In</Text>
 
                 <View style={styles.inputContainer}>
                     <TextInput style={styles.inputs}
                         keyboardType="email-address"
-                        placeholder="Email"
-                        onChangeText={(email) => this.setState({email})}/>
+                        placeholder="Username"
+                        onChangeText={(username) => this.setState({username})}/>
                 </View>
                 
                 <View style={styles.inputContainer}>
@@ -89,17 +73,16 @@ export default class SignUpScreen extends React.Component {
                 )}
 
                 <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={this.onLogin}>
-                    <Text style={styles.loginText}>Sign Up</Text>
+                    <Text style={styles.loginText}>Login</Text>
                 </TouchableHighlight>
 
                 <View style={styles.containerLinksRow}>
-                    <TouchableHighlight style={styles.txtLink} onPress={this.onSignUp}>
-                        <Text style={{fontWeight:'bold'}}>Already have an account?  
-                          <Text style={{color: 'blue', paddingLeft: 5}}
-                            onPress={() => this.props.navigation.navigate('LogInStack')}>
-                             Log In now
-                          </Text>
-                        </Text>
+                    <TouchableHighlight style={styles.txtLink} onPress={() => this.onClickListener('restore_password')}>
+                        <Text style={{fontWeight:'bold'}}>Forgot your password?</Text>
+                    </TouchableHighlight>
+
+                    <TouchableHighlight style={styles.txtLink} onPress={this.goToSignUpPage}>
+                        <Text style={{fontWeight:'bold'}}>Register</Text>
                     </TouchableHighlight>
                 </View>            
         </View>

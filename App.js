@@ -1,7 +1,14 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, AsyncStorage } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
+
+import Parse from "parse/react-native";
+
+Parse.setAsyncStorage(AsyncStorage);
+
+Parse.initialize("yJSQIzwAUd9myWeCOj93hvt9XwG8Fv4MEi0liPVR", "cy5sDVqAD61V1hOg1yUFfengagP14Rv1Uzshg3By");
+Parse.serverURL = 'https://parseapi.back4app.com/';
 
 export default class App extends React.Component {
   state = {

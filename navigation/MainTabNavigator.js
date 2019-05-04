@@ -5,6 +5,7 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import LogInScreen from '../screens/LogInScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -14,22 +15,26 @@ const SignUpStack = createStackNavigator({
   SignUp: SignUpScreen,
 });
 
+const LogInStack = createStackNavigator({
+  LogIn: LogInScreen,
+});
+
+
 HomeStack.navigationOptions = {
   tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ) 
+  tabBarVisible: false,
+  tabBarOptions: { showLabel: false } 
 };
 
 SignUpStack.navigationOptions = {
-  tabBarLabel: 'Home',
+  tabBarLabel: 'Sign Up',
+  tabBarVisible: false,
+  tabBarOptions: { showLabel: false }
+  
+};
+
+LogInStack.navigationOptions = {
+  tabBarLabel: 'Log In',
   tabBarVisible: false,
   tabBarOptions: { showLabel: false }
   
@@ -37,5 +42,6 @@ SignUpStack.navigationOptions = {
 
 export default createBottomTabNavigator({
   HomeStack,
-  SignUpStack
+  SignUpStack,
+  LogInStack
 });
