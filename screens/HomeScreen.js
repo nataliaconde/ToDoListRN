@@ -31,6 +31,7 @@ export default class HomeScreen extends React.Component {
       idObject: ''
     }
   }
+
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: 'List',
@@ -51,6 +52,7 @@ export default class HomeScreen extends React.Component {
                   },
                   {
                     text: 'Yes', onPress: () => {
+                      navigation.getParam('clearAll')
                       Parse.User.logOut();
                       navigation.navigate('LogInStack')
                   }},
@@ -64,7 +66,20 @@ export default class HomeScreen extends React.Component {
     };
   };
 
+  clearAll = () =>{
+    this.setState({
+      results: [],
+      item: '',
+      nameErrorNew: null,
+      nameErrorUpdate: null,
+      dialogVisible: false,
+      updateValueDialog: '',
+      idObject: ''
+    })
+  }
+  
   componentWillMount(){
+    this.props.navigation.setParams({ clearAll: this.clearAll }); 
     Parse.User.currentAsync().then(user => {
       if (user == undefined) {
         this.props.navigation.navigate('LogInStack') 
@@ -115,10 +130,13 @@ export default class HomeScreen extends React.Component {
   }
 
   getAllData = async () => {
+    const idUser = Parse.User.current();
+    console.log(idUser)
     const query = new Parse.Query("Todo");
     query.exists("task");
+    query.equalTo('userId', idUser);
     const resultQuery = await query.find();
-    console.log(resultQuery);
+    console.log(JSON.stringify(resultQuery));
     this.setState({results:resultQuery}); 
   }
 
@@ -133,7 +151,6 @@ export default class HomeScreen extends React.Component {
 
       todo.set("task", this.state.item);
       todo.set("userId",  Parse.User.current());
-      console.log(this.state.item)
       
       todo.save().then(object => {
         this.getAllData();
@@ -228,7 +245,7 @@ export default class HomeScreen extends React.Component {
             </View>
             {!!this.state.nameErrorUpdate && (
               <View styles={styles.divError}>
-                  <Text style={styles.divErrorFont}>{this.state.nameErrorUpdate}</Text>
+                <Text style={styles.divErrorFont}>{this.state.nameErrorUpdate}</Text>
               </View>
             )}
           </Dialog>

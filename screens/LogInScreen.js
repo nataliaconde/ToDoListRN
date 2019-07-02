@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    AsyncStorage,
     StyleSheet,
     Text,
     View,
@@ -23,8 +22,21 @@ export default class LogInScreen extends React.Component {
             nameError: null
         }
     }
-    goToSignUpPage = async() =>{
+
+    submitAndClear = () => {
+        this.setState({
+            username: '',
+            password: '',
+            nameError: null
+        })
+    }
+
+    goToSignUpPage = () =>{
         this.props.navigation.navigate('SignUpStack');
+    }
+
+    restorePassword = () =>{
+        this.props.navigation.navigate('RestorePasswordStack');
     }
 
     onLogin = async() =>{
@@ -36,11 +48,13 @@ export default class LogInScreen extends React.Component {
             this.setState(() => ({ nameError: `Fill the fields correctly.` }));
         } else {
             try {
-                await Parse.User.logIn(username, password );
-
+                await Parse.User.logIn(username.toString(), password.toString());
                 this.props.navigation.navigate('HomeStack');
-            } catch (error) {
+
+                this.submitAndClear();
+            } catch (error) {                
                 this.setState(() => ({ nameError: error.message }));
+                return (error)
             }
         }
     }
@@ -54,6 +68,7 @@ export default class LogInScreen extends React.Component {
                     <TextInput style={styles.inputs}
                         keyboardType="email-address"
                         placeholder="Username"
+                        value={this.state.username}
                         onChangeText={(username) => this.setState({username})}/>
                 </View>
                 
@@ -62,6 +77,7 @@ export default class LogInScreen extends React.Component {
                     placeholder="Password"
                     secureTextEntry={true}
                     underlineColorAndroid='transparent'
+                    value={this.state.password}
                     onChangeText={(password) => this.setState({password})}/>
                 </View>
 
@@ -77,7 +93,7 @@ export default class LogInScreen extends React.Component {
                 </TouchableHighlight>
 
                 <View style={styles.containerLinksRow}>
-                    <TouchableHighlight style={styles.txtLink} onPress={() => this.onClickListener('restore_password')}>
+                    <TouchableHighlight style={styles.txtLink} onPress={this.restorePassword}>
                         <Text style={{fontWeight:'bold'}}>Forgot your password?</Text>
                     </TouchableHighlight>
 

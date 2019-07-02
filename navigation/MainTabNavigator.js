@@ -6,6 +6,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import LogInScreen from '../screens/LogInScreen';
+import RestorePasswordScreen from '../screens/RestorePasswordScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -17,6 +18,10 @@ const SignUpStack = createStackNavigator({
 
 const LogInStack = createStackNavigator({
   LogIn: LogInScreen,
+});
+
+const RestorePasswordStack = createStackNavigator({
+  RestorePassword: RestorePasswordScreen,
 });
 
 
@@ -40,8 +45,16 @@ LogInStack.navigationOptions = {
   
 };
 
+RestorePasswordStack.navigationOptions = {
+  tabBarLabel: 'Reset Password',
+  tabBarVisible: false,
+  tabBarOptions: { showLabel: false }
+  
+};
+
 export default createBottomTabNavigator({
   HomeStack,
   SignUpStack,
-  LogInStack
+  LogInStack,
+  RestorePasswordStack
 });

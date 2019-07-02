@@ -18,13 +18,23 @@ export default class SignUpScreen extends React.Component {
     constructor(props){
         super(props)
         this.state = {
+            username: '',
             email: '',
             password: '',
             nameError: null
         }
     }
 
-    goToLogInPage = async() =>{
+    submitAndClear = () => {
+        this.setState({
+            username: '',
+            email: '',
+            password: '',
+            nameError: null
+        })
+    }
+
+    goToLogInPage = () =>{
         this.props.navigation.navigate('LogInStack');
     }
 
@@ -45,9 +55,11 @@ export default class SignUpScreen extends React.Component {
               const result = await user.signUp();
               
               AsyncStorage.setItem('sessionToken', result.getSessionToken());
-              AsyncStorage.setItem('username', result.getUsername())
+              AsyncStorage.setItem('username', result.getUsername());
 
-              this.props.navigation.navigate('HomeStack');
+              this.submitAndClear();
+
+              this.props.navigation.navigate('HomeStack');            
             } catch (error) {
                 this.setState(() => ({ nameError: error.message }));
             }
@@ -63,6 +75,7 @@ export default class SignUpScreen extends React.Component {
                     <TextInput style={styles.inputs}
                         keyboardType="default"
                         placeholder="Username"
+                        value={this.state.username}
                         onChangeText={(username) => this.setState({username})}/>
                 </View>
 
@@ -70,14 +83,17 @@ export default class SignUpScreen extends React.Component {
                     <TextInput style={styles.inputs}
                         keyboardType="email-address"
                         placeholder="Email"
+                        value={this.state.email}
                         onChangeText={(email) => this.setState({email})}/>
                 </View>
                 
                 <View style={styles.inputContainer}>
                 <TextInput style={styles.inputs}
                     placeholder="Password"
+                    value={this.state.password}
                     secureTextEntry={true}
                     underlineColorAndroid='transparent'
+                    value={this.state.password}
                     onChangeText={(password) => this.setState({password})}/>
                 </View>
 
